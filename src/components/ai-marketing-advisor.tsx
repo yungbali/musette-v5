@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { generateClient } from 'aws-amplify/api';
+import { useState, useContext } from 'react'
 import { Button } from "./ui/button"
 import AiMarketingAdvisorForm from './ai-marketing-advisor-form'
 
@@ -9,15 +10,13 @@ import {
 } from "./ui/alert-dialog"
 import { AlertDialogCancel } from '@radix-ui/react-alert-dialog';
 import MarkDownDisplay from './react-markdown'
-import { BASEURL } from '../util/baseUrl'
-
-
+import { CulturalContext } from '../contexts/CulturalContext'
 
 interface PropsData {
   data: string;
   error: string;
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
-    handleSlectInputChange: (value: string)=> void;
+  handleSlectInputChange: (value: string) => void;
   handleSubmit: () => Promise<void>;
   loading: boolean;
   prompt: {
@@ -28,12 +27,11 @@ interface PropsData {
     streams: string;
     budget: string;
     advice: string;
+    cultural_elements: string;
+    diaspora_focus: string;
   }
 }
 
-
-
-// function AlertDialogDemo({ children, onClick, loading }: { children: ReactNode, onClick: () => void, loading: boolean }) {
 function AlertDialogDemo({ loading, data, error, handleSlectInputChange, handleInputChange, handleSubmit, prompt }: PropsData) {
   return (
     <AlertDialog>
@@ -52,7 +50,7 @@ function AlertDialogDemo({ loading, data, error, handleSlectInputChange, handleI
           error={error}
           loading={loading}
           handleInputChange={handleInputChange}
-          handleSlectInputChange={handleSlectInputChange}
+          handleSlectInputChange={(value) => handleSlectInputChange(value)}
         />
         <AlertDialogCancel>Cancel</AlertDialogCancel>
       </AlertDialogContent>}
@@ -60,9 +58,14 @@ function AlertDialogDemo({ loading, data, error, handleSlectInputChange, handleI
   )
 }
 
+const generateMarketingAdvice = /* GraphQL */ `
+  mutation GenerateMarketingAdvice($input: MarketingInput!) {
+    generateMarketingAdvice(input: $input)
+  }
+`;
 
 const useAiMarketingAdvisor = () => {
-
+  const culturalContext = useContext(CulturalContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [data, setData] = useState("");
@@ -74,90 +77,49 @@ const useAiMarketingAdvisor = () => {
     streams: '',
     budget: '',
     advice: '',
+    cultural_elements: culturalContext?.musicTraditions.join(', ') || '',
+    diaspora_focus: culturalContext?.diasporaConnections.join(', ') || ''
   });
 
-
-  // const [conversation, setConversation] = useState([])
-  // const [userInput, setUserInput] = useState('')
-
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setPrompt(prevPrompt => ({
-      ...prevPrompt,
-      [e.target.id]: e.target.value
-    }));
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPrompt(prev => ({ ...prev, [e.target.id]: e.target.value }));
   };
 
   const handleSlectInputChange = (value: string) => {
-    setPrompt({
-      ...prompt,
-      target_audience: value
-    });
-  }
+    setPrompt(prev => ({ ...prev, target_audience: value }));
+  };
 
   const handleSubmit = async () => {
     setLoading(true);
     setError("");
 
     try {
-      const response = await fetch(`${BASEURL}/generate-marketing-advice`, {
-        body: JSON.stringify(prompt),
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("musette-jwt")}`
+      const client = generateClient();
+      const response = await client.graphql({
+        query: generateMarketingAdvice,
+        variables: {
+          input: {
+            ...prompt,
+            cultural_context: JSON.stringify(culturalContext)
+          }
         }
       });
 
-      if (response.ok) {
-        setLoading(false);
-        const reader = response.body?.getReader();
-        const decoder = new TextDecoder();
-        let done = false;
-        while (!done) {
-          if (reader) {
-            const { value, done: streamDone } = await reader.read();
-            done = streamDone;
-            if (value) {
-              setData((prevData) => prevData + decoder.decode(value)); // Append new chunks
-            }
-          }
-        }
+      if ('data' in response) {
+        setData(response.data.generateMarketingAdvice);
       }
     } catch (err) {
-      console.log('The error is: ', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
-  return {
-    handleSubmit,
-    handleInputChange,
-    handleSlectInputChange,
-    data,
-    loading,
-    error,
-    prompt
-  }
-}
+  return { loading, error, data, prompt, handleSubmit, handleInputChange, handleSlectInputChange };
+};
 
 export function AIMarketingAdvisor() {
-
-  // const [conversation, setConversation] = useState([])
-  // const [userInput, setUserInput] = useState('')
-
-
-  // const handleSendMessage = () => {
-  //   if (userInput.trim()) {
-  //     setConversation([...conversation, { type: 'user', message: userInput }])
-  //     // Simulated AI response
-  //     setTimeout(() => {
-  //       setConversation(prev => [...prev, { type: 'ai', message: "Thank you for your input. I'm analyzing your data and will provide personalized marketing insights shortly." }])
-  //     }, 1000)
-  //     setUserInput('')
-  //   }
-  // }
-
   const { data, prompt, error, handleInputChange, handleSlectInputChange, handleSubmit, loading } = useAiMarketingAdvisor();
-
 
   const uiToShow = data ? 1 : 0;
   if (uiToShow === 0) {
@@ -169,7 +131,7 @@ export function AIMarketingAdvisor() {
         error={error}
         loading={loading}
         handleInputChange={handleInputChange}
-        handleSlectInputChange={handleSlectInputChange}
+        handleSlectInputChange={(value) => handleSlectInputChange(value)}
       />
     );
   }
@@ -177,7 +139,7 @@ export function AIMarketingAdvisor() {
   return (
     <>
       <AlertDialogDemo
-      handleSlectInputChange={handleSlectInputChange}
+        handleSlectInputChange={(value) => handleSlectInputChange(value)}
         prompt={prompt}
         data={data}
         error={error}

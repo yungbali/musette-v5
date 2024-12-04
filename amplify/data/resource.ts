@@ -1,48 +1,60 @@
 import { a, defineData } from '@aws-amplify/backend';
 
-const schema = a.schema({
-  marketingAdvisor: a.generation({
-    aiModel: a.ai.model('Claude 3.5 Sonnet'),
-    systemPrompt: `You are an expert music marketing advisor with deep knowledge of the music industry, digital marketing, and audience engagement strategies. 
-    Analyze the provided information and create detailed, actionable marketing plans that are:
-    1. Data-driven and specific to the artist's genre and audience
-    2. Budget-conscious and realistic to implement
-    3. Focused on growth and engagement metrics
-    4. Organized with clear steps and timelines
-    Always provide specific, actionable advice with examples and estimated costs.`,
-  })
-  .arguments({
-    band_name: a.string(),
-    genre: a.string(),
-    target_audience: a.string(),
-    current_followers: a.string(),
-    streams: a.string(),
-    budget: a.string(),
-    goals: a.string()
-  })
-  .returns(a.string())
-  .authorization((allow) => allow.authenticated()),
+const schema = defineData({
+  schema: a.schema({
+    marketingAdvisor: a.generation({
+      aiModel: a.ai.model('Claude 3.5 Sonnet'),
+      systemPrompt: `You are an expert in African music marketing, understanding both traditional and contemporary African music scenes.
+      Create marketing strategies that:
+      1. Honor and preserve cultural authenticity while reaching global audiences
+      2. Leverage both traditional and digital channels
+      3. Connect with African diaspora communities
+      4. Emphasize cultural storytelling and heritage
+      Always consider local context and global reach.`
+    })
+    .arguments({
+      artist_name: a.string(),
+      genre: a.string(),
+      cultural_background: a.string(),
+      target_audience: a.string(),
+      budget: a.string(),
+      goals: a.string()
+    }),
 
-  epkGenerator: a.generation({
-    aiModel: a.ai.model('Claude 3.5 Sonnet'),
-    systemPrompt: `You are an expert EPK (Electronic Press Kit) creator for musicians.
-    Create professional, compelling EPKs that include:
-    1. Artist biography
-    2. Press highlights
-    3. Performance history
-    4. Media coverage
-    Always maintain a professional tone and highlight unique selling points.`,
-  })
-  .arguments({
-    artist_name: a.string(),
-    genre: a.string(),
-    career_highlights: a.string(),
-    discography: a.string(),
-    press_mentions: a.string(),
-    social_media: a.string()
-  })
-  .returns(a.string())
-  .authorization((allow) => allow.authenticated()),
-});
+    epkGenerator: a.generation({
+      aiModel: a.ai.model('Claude 3.5 Sonnet'),
+      systemPrompt: `Create EPKs that showcase African artists' unique cultural perspectives and global influence.
+      Include:
+      1. Cultural context and heritage
+      2. Fusion of traditional and modern elements
+      3. Impact on global music scene
+      4. Connection to African diaspora
+      Emphasize authenticity and cultural significance.`
+    })
+    .arguments({
+      artist_name: a.string(),
+      biography: a.string(),
+      cultural_elements: a.string(),
+      achievements: a.string(),
+      press: a.string()
+    }),
 
-export default defineData({ schema });
+    marketingPlans: a.generation({
+      aiModel: a.ai.model('Claude 3.5 Sonnet'),
+      systemPrompt: `Develop marketing plans that bridge African cultural heritage with global audiences.
+      Focus on:
+      1. Cultural authenticity in global markets
+      2. Diaspora community engagement
+      3. Traditional and digital media balance
+      4. Cross-cultural collaboration opportunities`
+    })
+    .arguments({
+      goals: a.string(),
+      cultural_context: a.string(),
+      target_markets: a.string(),
+      resources: a.string()
+    })
+  })
+})
+
+export default schema;

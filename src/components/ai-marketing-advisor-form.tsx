@@ -3,8 +3,9 @@ import { Button } from "./ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card"
 import { Input } from "./ui/input"
 import { Label } from "./ui/label"
-import { ChevronLeft, ChevronRight, LucideLoaderCircle } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
+import { africanGenres } from '../constants/cultural-data';
 
 
 
@@ -12,7 +13,7 @@ interface PropsData {
     data: string;
     error: string;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
-    handleSlectInputChange: (value: string)=> void;
+    handleSlectInputChange: (field: string, value: string) => void;
     handleSubmit: () => Promise<void>;
     loading: boolean;
     prompt: {
@@ -59,10 +60,7 @@ const AiMarketingAdvisorForm = ({ loading, handleInputChange, handleSlectInputCh
 
     return (
         <>
-            <Card className={`w-full max-w-2xl mx-auto ${loading ? "after:rounded-xl after:w-full after:h-full after:bg-[rgba(0,0,0,.1)] after:block after:blur-lg after:absolute after:top-0 after:left-0 after:z-50" : ""}`}>
-                {loading && <div className='flex items-center justify-center rounded-xl w-full h-full absolute top-0 left-0'>
-                    <LucideLoaderCircle className='animate-spin w-32 relative z-40' size={50} />
-                </div>}
+            <Card className={`w-full max-w-2xl mx-auto relative ${loading ? "after:blur-lg" : ""}`}>
                 <CardHeader>
                     <CardTitle className="text-2xl font-bold text-[#333333]">AI Marketing Advisor</CardTitle>
                     <CardDescription>Get personalized marketing insights powered by AI</CardDescription>
@@ -76,11 +74,22 @@ const AiMarketingAdvisorForm = ({ loading, handleInputChange, handleSlectInputCh
                             </div>
                             <div>
                                 <Label htmlFor="genre">Primary Genre</Label>
-                                <Input onChange={handleInputChange} value={prompt.genre} id="genre" placeholder="e.g., Afrobeats, Hip-Hop, Jazz" />
+                                <Select onValueChange={(value) => handleSlectInputChange('genre', value)} value={prompt.genre}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select your genre" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {africanGenres.map((genre) => (
+                                            <SelectItem key={genre.value} value={genre.value}>
+                                                {genre.label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             </div>
                             <div>
                                 <Label htmlFor="target-audience">Target Audience</Label>
-                                <Select onValueChange={handleSlectInputChange} value={prompt.target_audience}>
+                                <Select onValueChange={(value) => handleSlectInputChange('target_audience', value)} value={prompt.target_audience}>
                                     <SelectTrigger id="target_audience">
                                         <SelectValue placeholder="Select your target audience" />
                                     </SelectTrigger>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, ReactNode } from "react"
+import { useState, useEffect, type ReactNode } from "react"
 import { ArrowLeft, PenTool, FileText, MessageSquare, Star, PlusCircle, LucideLoaderCircle, Terminal } from 'lucide-react'
 import { Button } from "./components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./components/ui/card"
@@ -11,64 +11,84 @@ import { Label } from "./components/ui/label"
 import { MarketingPlans } from "./components/marketing-plans"
 import { EPKCreation } from "./components/epk-creation"
 import { AIMarketingAdvisor } from "./components/ai-marketing-advisor"
-
-import placeholderImage from "./assets/placeholder-image.svg"
-// import { Navigate } from "react-router-dom"
-import axios from "axios"
 import { Alert, AlertTitle } from "./components/ui/alert"
-import { BASEURL } from "./util/baseUrl"
+import { generateClient } from 'aws-amplify/api'
+import type { GraphQLResult } from '@aws-amplify/api-graphql'
 
+// Placeholder image for avatar
+const placeholderImage = 'https://github.com/shadcn.png'
 
+// Define the Review type
+type ReviewType = {
+  id: string
+  message: string
+  rating: number
+  createdAt: string
+}
 
+type ReviewResponse = {
+  listReviews: {
+    items: ReviewType[]
+  }
+}
 
-const useFetchReviews = ({refetch}: {refetch: number}) => {
+export const useFetchReviews = ({refetch}: {refetch: number}) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  // const [data, setData] = useState<{_id: string; name: string; message: string; rating: number;}[]>([]);
-  const [data, setData] = useState<Record<string, string | number>[]>([]);
+  const [data, setData] = useState<ReviewType[]>([]);
+  const client = generateClient()
 
   useEffect(() => {
-
     async function getReviews() {
-      axios.get(`${BASEURL}/review`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("musette-jwt")}`
+      try {
+        setLoading(true)
+        const response = await client.graphql({
+          query: `query ListReviews {
+            listReviews {
+              items {
+                id
+                message
+                rating
+                createdAt
+              }
+            }
+          }`
+        }) as GraphQLResult<ReviewResponse>
+        
+        if (response.data) {
+          setData(response.data.listReviews.items)
         }
-      }).then(res => {
-        setLoading(false);
-        setData(res.data.data?.data);
-        // console.log(res.data.data)
-      }).catch(err => {
-        setLoading(false);
-        setError(err?.response?.data?.message);
-        console.log(err?.response?.data?.message);
-      });
+        setLoading(false)
+      } catch (err) {
+        setLoading(false)
+        setError(err instanceof Error ? err.message : 'Failed to fetch reviews')
+      }
     }
 
-    getReviews();
+    getReviews()
+  }, [refetch])
 
-  }, [refetch]);
-
-
-  return {
-    reviewLoading: loading,
-    reviews: data,
-    reviewError: error
-  }
-};
-
+  return { reviewLoading: loading, reviews: data, reviewError: error }
+}
 
 interface AppFlowProps {
   signOut?: () => void;
   user?: any;
 }
 
+// Add environment variable for base URL
+const BASEURL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+
 export default function Component({ signOut, user }: AppFlowProps) {
+  const [activeService, setActiveService] = useState<string | null>(null);
   const [screen, setScreen] = useState<'onboarding' | 'dashboard' | 'service'>('onboarding')
   const [onboardingStep, setOnboardingStep] = useState(0)
   const [credits] = useState(250)
   const [showFeedback, setShowFeedback] = useState(false)
-  const [activeService, setActiveService] = useState<string | null>(null)
+  const [responseMessage, setResponseMessage] = useState<string>("");
+  const [message, setMessage] = useState('');
+  const [rating, setRating] = useState<number>(0);
+  const [error] = useState<string>("");
 
   const onboardingSteps = [
     {
@@ -127,45 +147,47 @@ export default function Component({ signOut, user }: AppFlowProps) {
     }
   }
 
+  const handleCreateReview = async () => {
+    try {
+      // Add your review creation logic here
+      const response = await fetch(`${BASEURL}/reviews`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem("musette-jwt")}`
+        },
+        body: JSON.stringify({
+          message,
+          rating,
+          // Add other necessary fields
+        })
+      });
 
-  const [responseMessage, setResponseMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
-  const [rating, setRating] = useState("");
-
-
-  const [refetchVal, setRefetchVal] = useState(0);
-
-  const handleCreateReview = () => {
-    setLoading(true);
-    setError("");
-    setResponseMessage("");
-
-    axios.post("http://localhost:3001/api/review", { message, rating }, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("musette-jwt")}`
+      if (!response.ok) {
+        throw new Error('Failed to create review');
       }
-    }).then(res => {
-      setLoading(false);
-      console.log(res.data);
-      setResponseMessage(res.data.message);
-      setMessage("");
-      setRating("");
-      setRefetchVal(refetchVal + 1);
-    }).catch(err => {
-      setLoading(false);
-      setError(err?.response?.data?.message);
-      console.log(err?.response?.data?.message);
-    });
+
+      // Clear form after successful submission
+      setMessage('');
+      setRating(0);
+    } catch (error) {
+      console.error('Error creating review:', error);
+      // Handle error appropriately
+    }
   };
 
+  // Properly type the rating change handler
+  const handleRatingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRating(Number(e.target.value));
+  };
 
-  const {
-    reviewLoading,
-    reviews
-  } = useFetchReviews({refetch: refetchVal});
-  
+  // Use loading state in component
+  const [isLoading] = useState(false);
+  useEffect(() => {
+    if (isLoading) {
+      setResponseMessage("Processing...");
+    }
+  }, [isLoading]);
 
   return (
     <div className="min-h-screen bg-[#F5F5F5] bg-opacity-90 flex flex-col">
@@ -321,16 +343,6 @@ export default function Component({ signOut, user }: AppFlowProps) {
             <section className="space-y-6">
               <h2 className="text-2xl font-semibold text-[#333333]">Success Stories</h2>
               <div className="grid gap-6 md:grid-cols-2">
-                {!reviewLoading && reviews && reviews?.length > 0 && reviews?.map(el => {
-                  return (
-                    <TestimonialCard key={el._id}
-                      name={el.name as string}
-                      quote={el.message as string}
-                      image="/placeholder.svg?height=64&width=64"
-                      rating={el.rating as number}
-                    />
-                  );
-                })}
                 <TestimonialCard
                   name="Aisha M."
                   quote="The AI Marketing Advisor gave me insights that boosted my streams by 200%!"
@@ -350,7 +362,7 @@ export default function Component({ signOut, user }: AppFlowProps) {
             {showFeedback && (
               <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
                 <Card className="w-full max-w-md">
-                  {loading && <div className='flex items-center justify-center rounded-xl w-full h-full absolute top-0 left-0'>
+                  {isLoading && <div className='flex items-center justify-center rounded-xl w-full h-full absolute top-0 left-0'>
                     <LucideLoaderCircle className='animate-spin w-32 relative z-40' size={50} />
                   </div>}
                   <CardHeader>
@@ -379,7 +391,14 @@ export default function Component({ signOut, user }: AppFlowProps) {
                     {/* rating */}
                     <div>
                       <Label htmlFor="rating" className="ssr-only mr-2">Your rating</Label>
-                      <input onChange={e => setRating(e.target.value)} id="rating" value={rating} type="number" min={1} max={5} className="border-2 rounded-md px-1" />
+                      <input 
+                        type="number"
+                        min={1}
+                        max={5}
+                        value={rating}
+                        onChange={handleRatingChange}
+                        className="border-2 rounded-md px-1"
+                      />
                     </div>
                     <div className="mt-4 flex justify-end space-x-2">
                       <Button variant="outline" onClick={() => setShowFeedback(false)}>Cancel</Button>

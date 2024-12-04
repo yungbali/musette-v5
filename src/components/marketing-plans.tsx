@@ -1,165 +1,66 @@
-import MarkDownDisplay from './react-markdown'
-import MarketingPlansForm from './marketing-plans-form'
 import { useState } from 'react';
+import { generateClient } from 'aws-amplify/api';
+import { createCulturalPrompt } from '../lib/culturalPrompt';
+import { MarketingPlansForm } from './marketing-plans-form';
 
-
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogTrigger,
-} from "./ui/alert-dialog"
-import { Button } from "./ui/button"
-import { AlertDialogCancel } from '@radix-ui/react-alert-dialog';
-import { BASEURL } from '../util/baseUrl';
-
-
-
-interface PropsData {
-  data: string;
-  error: string;
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
-  handleSubmit: () => Promise<void>;
-  loading: boolean;
-  prompt: {
-    goals: string;
-    artist_name: string;
-    genre: string;
-    target_audience: string;
-    additional_information: string;
-    assets: string;
-    budget: string;
-    channels: string;
-    timeline: string;
+interface MarketingPlanResponse {
+  generateMarketingPlan: {
+    plan: string;
+    culturalContext: string;
   }
 }
 
+export function MarketingPlans() {
+  const [state, setState] = useState({
+    loading: false,
+    error: '',
+    data: '',
+    step: 1
+  });
 
-
-// function AlertDialogDemo({ children, onClick, loading }: { children: ReactNode, onClick: () => void, loading: boolean }) {
-function AlertDialogDemo({ loading, data, error, handleInputChange, handleSubmit, prompt }: PropsData) {
-  return (
-    <AlertDialog>
-      <AlertDialogTrigger className="flex items-center justify-end" asChild>
-        <div className='flex items-center justify-end'>
-          <Button variant="outline" onClick={()=> {
-
-          }}>Generate New Market Plan</Button>
-        </div>
-      </AlertDialogTrigger>
-      {<AlertDialogContent>
-        <MarketingPlansForm
-          prompt={prompt}
-          data={data} error={error}
-          handleInputChange={handleInputChange}
-          handleSubmit={handleSubmit}
-          loading={loading}
-        />
-        <AlertDialogCancel>Cancel</AlertDialogCancel>
-      </AlertDialogContent>}
-    </AlertDialog>
-  )
-}
-
-
-
-
-const useMarketingPlan = () => {
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [data, setData] = useState("");
   const [prompt, setPrompt] = useState({
-    goals: '',
     artist_name: '',
     genre: '',
+    region: '',
     target_audience: '',
-    additional_information: '',
-    assets: '',
     budget: '',
-    channels: '',
     timeline: ''
   });
 
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setPrompt(prevPrompt => ({
-      ...prevPrompt,
-      [e.target.id]: e.target.value
-    }));
+  const handlePromptChange = (field: string, value: string) => {
+    setPrompt(prev => ({ ...prev, [field]: value }));
   };
-
 
   const handleSubmit = async () => {
-    setLoading(true);
-    setError("");
+    setState(s => ({ ...s, loading: true }));
     try {
-      const response = await fetch(`${BASEURL}/generate-a-marketing-plan`, {
-        body: JSON.stringify(prompt),
-        method: 'POST',
-        headers:{
-          Authorization: `Bearer ${localStorage.getItem("musette-jwt")}`
-        }
-      });
-
-      if (response.ok) {
-        setLoading(false);
-        const reader = response.body?.getReader();
-        const decoder = new TextDecoder();
-        let done = false;
-        while (!done) {
-          if(reader) {
-            const { value, done: streamDone } = await reader.read();
-            done = streamDone;
-            if (value) {
-              setData((prevData) => prevData + decoder.decode(value)); // Append new chunks
+      const client = generateClient();
+      const response = await client.graphql<MarketingPlanResponse>({
+        query: /* GraphQL */ `
+          mutation GenerateMarketingPlan($input: MarketingInput!) {
+            generateMarketingPlan(input: $input) {
+              plan
+              culturalContext
             }
           }
+        `,
+        variables: {
+          input: {
+            ...prompt,
+            systemPrompt: createCulturalPrompt('marketing', prompt)
+          }
         }
+      });
+      
+      if ('data' in response) {
+        setState(s => ({ ...s, data: response.data.generateMarketingPlan.plan }));
       }
     } catch (err) {
-      console.log('The error is: ', err);
+      setState(s => ({ ...s, error: err instanceof Error ? err.message : 'Error' }));
+    } finally {
+      setState(s => ({ ...s, loading: false }));
     }
-  }
-
-  return {
-    handleSubmit,
-    handleInputChange,
-    data,
-    loading,
-    error,
-    prompt
-  }
-}
-
-
-
-export function MarketingPlans() {
-
-  const { data, error, handleInputChange, handleSubmit, loading, prompt } = useMarketingPlan();
-
-
-  const uiToShow = data ? 1 : 0;
-  if (uiToShow === 0) {
-    return (
-      <MarketingPlansForm
-        prompt={prompt}
-        data={data} error={error}
-        handleInputChange={handleInputChange}
-        handleSubmit={handleSubmit}
-        loading={loading}
-      />
-    )
   };
 
-  return (
-    <>
-      <AlertDialogDemo prompt={prompt}
-        data={data} error={error}
-        handleInputChange={handleInputChange}
-        handleSubmit={handleSubmit}
-        loading={loading}
-      />
-      {(data && data.length > 0) && <MarkDownDisplay key={data} text={data} />}
-    </>
-  );
+  return <MarketingPlansForm {...state} prompt={prompt} onSubmit={handleSubmit} onPromptChange={handlePromptChange} />;
 }
