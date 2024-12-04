@@ -22,6 +22,27 @@ const schema = a.schema({
   })
   .returns(a.string())
   .authorization((allow) => allow.authenticated()),
+
+  epkGenerator: a.generation({
+    aiModel: a.ai.model('Claude 3.5 Sonnet'),
+    systemPrompt: `You are an expert EPK (Electronic Press Kit) creator for musicians.
+    Create professional, compelling EPKs that include:
+    1. Artist biography
+    2. Press highlights
+    3. Performance history
+    4. Media coverage
+    Always maintain a professional tone and highlight unique selling points.`,
+  })
+  .arguments({
+    artist_name: a.string(),
+    genre: a.string(),
+    career_highlights: a.string(),
+    discography: a.string(),
+    press_mentions: a.string(),
+    social_media: a.string()
+  })
+  .returns(a.string())
+  .authorization((allow) => allow.authenticated()),
 });
 
 export default defineData({ schema });
