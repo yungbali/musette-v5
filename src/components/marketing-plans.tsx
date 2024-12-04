@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { generateClient } from 'aws-amplify/api';
 import { createCulturalPrompt } from '../lib/culturalPrompt';
 import { MarketingPlansForm } from './marketing-plans-form';
+import MarkDownDisplay from './react-markdown';
 
 interface MarketingPlanResponse {
   generateMarketingPlan: {
@@ -10,21 +11,14 @@ interface MarketingPlanResponse {
   }
 }
 
-export function MarketingPlans() {
-  const [state, setState] = useState({
-    loading: false,
-    error: '',
-    data: '',
-    step: 1
-  });
-
+const useMarketingPlans = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [data, setData] = useState("");
   const [prompt, setPrompt] = useState({
-    artist_name: '',
     genre: '',
     region: '',
-    target_audience: '',
     budget: '',
-    timeline: ''
   });
 
   const handlePromptChange = (field: string, value: string) => {
@@ -32,7 +26,9 @@ export function MarketingPlans() {
   };
 
   const handleSubmit = async () => {
-    setState(s => ({ ...s, loading: true }));
+    setLoading(true);
+    setError("");
+
     try {
       const client = generateClient();
       const response = await client.graphql<MarketingPlanResponse>({
@@ -51,16 +47,39 @@ export function MarketingPlans() {
           }
         }
       });
-      
+
       if ('data' in response) {
-        setState(s => ({ ...s, data: response.data.generateMarketingPlan.plan }));
+        setData(response.data.generateMarketingPlan.plan);
       }
     } catch (err) {
-      setState(s => ({ ...s, error: err instanceof Error ? err.message : 'Error' }));
+      setError(err instanceof Error ? err.message : 'Error');
     } finally {
-      setState(s => ({ ...s, loading: false }));
+      setLoading(false);
     }
   };
 
-  return <MarketingPlansForm {...state} prompt={prompt} onSubmit={handleSubmit} onPromptChange={handlePromptChange} />;
+  return {
+    loading,
+    error,
+    data,
+    prompt,
+    handlePromptChange,
+    handleSubmit
+  };
+};
+
+export function MarketingPlans() {
+  const { loading, data, prompt, handlePromptChange, handleSubmit } = useMarketingPlans();
+
+  return (
+    <>
+      <MarketingPlansForm
+        loading={loading}
+        prompt={prompt}
+        onPromptChange={handlePromptChange}
+        onSubmit={handleSubmit}
+      />
+      {data && <MarkDownDisplay text={data} title="Marketing Plan" btnText="Download Plan" />}
+    </>
+  );
 }
