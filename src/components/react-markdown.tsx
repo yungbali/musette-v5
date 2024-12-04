@@ -1,15 +1,23 @@
 import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Button } from './ui/button';
-import { Download } from 'lucide-react';
+import { Download, Loader } from 'lucide-react';
+import { Alert, AlertDescription } from './ui/alert';
 
-const MarkDownDisplay = ({ text, title = "Generated market Plan", btnText = "Download" }: { text?: string; title?: string; btnText?: string; }) => {
+interface MarkDownDisplayProps {
+  text?: string;
+  title?: string;
+  btnText?: string;
+  loading?: boolean;
+  error?: string;
+}
 
+const MarkDownDisplay = ({ text, title = "Generated Plan", btnText = "Download", loading, error }: MarkDownDisplayProps) => {
   const [markdownText, setMarkdownText] = useState(text);
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setMarkdownText(event.target.value);
   };
-
 
   const handleExportToTxt = () => {
     if (markdownText) {
@@ -34,28 +42,39 @@ const MarkDownDisplay = ({ text, title = "Generated market Plan", btnText = "Dow
     }
   };
 
-  return (
-    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      <div className='flex items-center justify-between'>
-        <h1 className='text-3xl mt-4'>{title}</h1>
-        <div>
-          <Button onClick={handleExportToTxt}>
-            <Download /> {btnText}
-          </Button>
-        </div>
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-12">
+        <Loader className="animate-spin h-8 w-8" />
       </div>
-      <div style={{ border: '1px solid #ccc', padding: '10px', borderRadius: '5px', margin: "20px 0 50px 0" }}>
+    );
+  }
+
+  if (error) {
+    return (
+      <Alert variant="destructive">
+        <AlertDescription>{error}</AlertDescription>
+      </Alert>
+    );
+  }
+
+  return (
+    <div className="p-6 font-sans">
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold">{title}</h1>
+        <Button onClick={handleExportToTxt}>
+          <Download className="mr-2" /> {btnText}
+        </Button>
+      </div>
+      <div className="my-6 p-4 border rounded-lg">
         <ReactMarkdown>{markdownText}</ReactMarkdown>
       </div>
-
       <textarea
         value={markdownText}
         onChange={handleChange}
         rows={7}
-        cols={50}
-        style={{ width: '100%', marginBottom: '20px', padding: "30px" }}
-        className='border-2 rounded-md'
-      ></textarea>
+        className="w-full p-4 border-2 rounded-md"
+      />
     </div>
   );
 };

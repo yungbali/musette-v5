@@ -69,7 +69,7 @@ const useMarketingPlans = () => {
 };
 
 export function MarketingPlans() {
-  const { loading, data, prompt, handlePromptChange, handleSubmit } = useMarketingPlans();
+  const { loading, error, data, prompt, handlePromptChange, handleSubmit } = useMarketingPlans();
 
   return (
     <>
@@ -79,7 +79,13 @@ export function MarketingPlans() {
         onPromptChange={handlePromptChange}
         onSubmit={handleSubmit}
       />
-      {data && <MarkDownDisplay text={data} title="Marketing Plan" btnText="Download Plan" />}
+      <MarkDownDisplay 
+        text={data} 
+        title="Marketing Plan" 
+        btnText="Download Plan"
+        loading={loading}
+        error={error}
+      />
     </>
   );
 }
