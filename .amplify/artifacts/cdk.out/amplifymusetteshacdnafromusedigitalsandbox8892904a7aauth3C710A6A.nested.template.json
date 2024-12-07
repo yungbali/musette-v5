@@ -590,16 +590,6 @@
    "Value": {
     "Ref": "amplifyAuthIdentityPool3FDE84CC"
    }
-  },
-  "amplifymusetteshacdnafromusedigitalsandbox8892904a7aauthamplifyAuthauthenticatedUserRoleD6E19970Ref": {
-   "Value": {
-    "Ref": "amplifyAuthauthenticatedUserRoleD8DA3689"
-   }
-  },
-  "amplifymusetteshacdnafromusedigitalsandbox8892904a7aauthamplifyAuthunauthenticatedUserRole83DC18AARef": {
-   "Value": {
-    "Ref": "amplifyAuthunauthenticatedUserRole2B524D9E"
-   }
   }
  }
 }
