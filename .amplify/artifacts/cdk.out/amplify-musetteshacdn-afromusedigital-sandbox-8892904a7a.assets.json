@@ -1,0 +1,19 @@
+{
+  "version": "38.0.1",
+  "files": {
+    "133cc32488af5c94be98de8a38468b801c96b0071780f79f9f9624329d3bd667": {
+      "source": {
+        "path": "amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "current_account-current_region": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
+          "objectKey": "133cc32488af5c94be98de8a38468b801c96b0071780f79f9f9624329d3bd667.json",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}
