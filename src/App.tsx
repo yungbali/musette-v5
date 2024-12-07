@@ -14,16 +14,6 @@ const theme: Theme = {
           100: '#8A4757'
         }
       }
-    },
-    components: {
-      button: {
-        primary: {
-          backgroundColor: '#9D5465',
-          _hover: {
-            backgroundColor: '#8A4757'
-          }
-        }
-      }
     }
   }
 };
