@@ -22,7 +22,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/133cc32488af5c94be98de8a38468b801c96b0071780f79f9f9624329d3bd667.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/9ab247db33edac5f7e3ec56ca729485fc645b2a78b17e4c8f7561b7bd7226f82.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -63,6 +63,198 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "region"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/auth/amplifyAuth/UserPool/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyAuthUserPool4BA7F805"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/auth/amplifyAuth/UserPoolAppClient/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyAuthUserPoolAppClient2626C6F8"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/auth/amplifyAuth/IdentityPool": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyAuthIdentityPool3FDE84CC"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/auth/amplifyAuth/authenticatedUserRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyAuthauthenticatedUserRoleD8DA3689"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/auth/amplifyAuth/unauthenticatedUserRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyAuthunauthenticatedUserRole2B524D9E"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/auth/amplifyAuth/IdentityPoolRoleAttachment": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyAuthIdentityPoolRoleAttachment045F17C8"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/auth/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/auth/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/auth/amplifymusetteshacdnafromusedigitalsandbox8892904a7aauthamplifyAuthUserPoolB4028532Ref": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifymusetteshacdnafromusedigitalsandbox8892904a7aauthamplifyAuthUserPoolB4028532Ref"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/auth/amplifymusetteshacdnafromusedigitalsandbox8892904a7aauthamplifyAuthUserPoolAppClient03C7ED02Ref": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifymusetteshacdnafromusedigitalsandbox8892904a7aauthamplifyAuthUserPoolAppClient03C7ED02Ref"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/auth/amplifymusetteshacdnafromusedigitalsandbox8892904a7aauthamplifyAuthIdentityPoolC01A99AARef": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifymusetteshacdnafromusedigitalsandbox8892904a7aauthamplifyAuthIdentityPoolC01A99AARef"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/auth.NestedStack/auth.NestedStackResource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "auth179371D7"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/userPoolId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "userPoolId"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/webClientId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "webClientId"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/identityPoolId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "identityPoolId"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/authRegion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "authRegion"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/allowUnauthenticatedIdentities": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "allowUnauthenticatedIdentities"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/signupAttributes": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "signupAttributes"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/usernameAttributes": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "usernameAttributes"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/verificationMechanisms": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "verificationMechanisms"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/passwordPolicyMinLength": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "passwordPolicyMinLength"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/passwordPolicyRequirements": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "passwordPolicyRequirements"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/mfaConfiguration": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mfaConfiguration"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/mfaTypes": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mfaTypes"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/socialProviders": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "socialProviders"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/oauthCognitoDomain": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "oauthCognitoDomain"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/oauthScope": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "oauthScope"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/oauthRedirectSignIn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "oauthRedirectSignIn"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/oauthRedirectSignOut": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "oauthRedirectSignOut"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/oauthResponseType": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "oauthResponseType"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/oauthClientId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "oauthClientId"
+          }
+        ],
+        "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/groups": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "groups"
           }
         ],
         "/amplify-musetteshacdn-afromusedigital-sandbox-8892904a7a/CDKMetadata/Default": [
