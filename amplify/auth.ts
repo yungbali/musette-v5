@@ -9,8 +9,5 @@ export const auth = defineAuth({
       required: true,
       mutable: false
     }
-  },
-  multifactor: {
-    mode: 'OFF'
   }
 });
