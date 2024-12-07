@@ -1,3 +1,5 @@
 import { defineBackend } from '@aws-amplify/backend';
 
-defineBackend({}); 
+const backend = defineBackend({
+  // Your backend configuration will go here
+}); 
