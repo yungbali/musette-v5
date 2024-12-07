@@ -1,5 +1,7 @@
 import { defineBackend } from '@aws-amplify/backend';
+import { defineAuth } from '@aws-amplify/backend';
+import { auth } from './auth';
 
 const backend = defineBackend({
-  // Your backend configuration will go here
+  auth: auth
 }); 
