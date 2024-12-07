@@ -4,9 +4,19 @@ import './index.css'
 import App from './App.tsx'
 import { Amplify } from 'aws-amplify';
 import '@aws-amplify/ui-react/styles.css';
-import outputs from '../amplify_outputs.json';
+import { amplifyconfiguration } from './amplifyconfiguration';
 
-Amplify.configure(outputs);
+Amplify.configure({
+  Auth: {
+    Cognito: amplifyconfiguration.Auth.Cognito
+  },
+  API: {
+    GraphQL: {
+      ...amplifyconfiguration.API.GraphQL,
+      defaultAuthMode: "apiKey" // Set explicit GraphQLAuthMode
+    }
+  }
+});
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
