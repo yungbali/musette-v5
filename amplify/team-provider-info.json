@@ -11,5 +11,49 @@
       "StackId": "arn:aws:cloudformation:us-east-1:683481185913:stack/amplify-musetteui-dev-69f55/73af1d80-b4f8-11ef-b8df-127947d726d5",
       "AmplifyAppId": "d14geo1b13y1be"
     }
+  },
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-musetteui-staging-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-musetteui-staging-deployment",
+      "StackName": "amplify-musetteui-staging",
+      "AmplifyAppId": "d14geo1b13y1be"
+    }
+  },
+  "prod": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-musetteui-prod-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-musetteui-prod-deployment",
+      "StackName": "amplify-musetteui-prod",
+      "AmplifyAppId": "d14geo1b13y1be"
+    }
+  },
+  "deve": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-musetteui-deve-99b82-authRole",
+      "UnauthRoleArn": "arn:aws:iam::683481185913:role/amplify-musetteui-deve-99b82-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::683481185913:role/amplify-musetteui-deve-99b82-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-musetteui-deve-99b82-deployment",
+      "UnauthRoleName": "amplify-musetteui-deve-99b82-unauthRole",
+      "StackName": "amplify-musetteui-deve-99b82",
+      "StackId": "arn:aws:cloudformation:us-east-1:683481185913:stack/amplify-musetteui-deve-99b82/0f40c660-b54c-11ef-8adf-0affe0f4b89f",
+      "AmplifyAppId": "d14geo1b13y1be"
+    }
+  },
+  "stagingneo": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-musetteui-stagingneo-9f413-authRole",
+      "UnauthRoleArn": "arn:aws:iam::683481185913:role/amplify-musetteui-stagingneo-9f413-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::683481185913:role/amplify-musetteui-stagingneo-9f413-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-musetteui-stagingneo-9f413-deployment",
+      "UnauthRoleName": "amplify-musetteui-stagingneo-9f413-unauthRole",
+      "StackName": "amplify-musetteui-stagingneo-9f413",
+      "StackId": "arn:aws:cloudformation:us-east-1:683481185913:stack/amplify-musetteui-stagingneo-9f413/da869610-b54c-11ef-8260-0e84d175f4af",
+      "AmplifyAppId": "d14geo1b13y1be"
+    }
   }
 }

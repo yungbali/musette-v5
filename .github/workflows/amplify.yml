@@ -1,0 +1,64 @@
+name: Musette UI CI/CD
+
+on:
+  push:
+    branches: [ main, develop, staging ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Lint
+      run: npm run lint
+      
+    - name: Build
+      run: npm run build
+      
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.ref == 'refs/heads/main' && 'production' || github.ref == 'refs/heads/staging' && 'staging' || 'development' }}
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+        
+    - name: Install AWS Amplify CLI
+      run: npm install -g @aws-amplify/cli
+      
+    - name: Set Environment
+      run: |
+        BRANCH=${GITHUB_REF##*/}
+        if [ "$BRANCH" = "main" ]; then
+          echo "ENV=prod" >> $GITHUB_ENV
+        elif [ "$BRANCH" = "staging" ]; then
+          echo "ENV=staging" >> $GITHUB_ENV
+        else
+          echo "ENV=dev" >> $GITHUB_ENV
+        fi
+        
+    - name: Deploy to AWS Amplify
+      run: |
+        amplify pull --appId ${{ secrets.AMPLIFY_APP_ID }} --envName ${{ env.ENV }} --yes
+        amplify push --yes 
