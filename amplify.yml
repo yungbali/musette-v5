@@ -1,15 +1,18 @@
 version: 1
 backend:
   phases:
+    preBuild:
+      commands:
+        - npm ci --quiet
     build:
       commands:
-        - npm install
-        - npx amplify push --yes
+        - npm run build:backend
 frontend:
   phases:
     preBuild:
       commands:
-        - npm install
+        - npm ci --quiet
+        - npm cache clean --force
     build:
       commands:
         - npm run build
@@ -20,3 +23,4 @@ frontend:
   cache:
     paths:
       - node_modules/**/*
+      - .npm-cache/**/*
