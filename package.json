@@ -16,9 +16,14 @@
   "devDependencies": {
     "@aws-amplify/backend": "^0.9.0",
     "@aws-amplify/backend-cli": "^0.9.0",
-    "aws-cdk-lib": "~2.110.1",
+    "aws-cdk-lib": "2.110.1",
     "constructs": "^10.0.0",
     "typescript": "^5.0.0"
+  },
+  "resolutions": {
+    "aws-cdk-lib": "2.110.1",
+    "@aws-amplify/backend": "0.9.0",
+    "@aws-amplify/backend-cli": "0.9.0"
   },
   "engines": {
     "node": ">=20.0.0",
