@@ -3,8 +3,8 @@ backend:
   phases:
     build:
       commands:
-        - amplify init --yes --amplify "{\"envName\":\"prod\"}" --providers "{\"awscloudformation\":{\"useProfile\":false,\"accessKeyId\":\"$AWS_ACCESS_KEY_ID\",\"secretAccessKey\":\"$AWS_SECRET_ACCESS_KEY\",\"region\":\"$AWS_REGION\"}}"
-        - amplify push --yes
+        - npm ci
+        - npx amplify push --yes
 frontend:
   phases:
     preBuild:
