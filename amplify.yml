@@ -3,7 +3,6 @@ backend:
   phases:
     build:
       commands:
-        - npm install -g @aws-amplify/cli@latest
         - amplify push --yes
 frontend:
   phases:

@@ -27,5 +27,9 @@
   "resolutions": {
     "glob": "^10.3.10",
     "rimraf": "^5.0.0"
+  },
+  "overrides": {
+    "glob": "9.0.0",
+    "rimraf": "^4.0.0"
   }
 }
