@@ -1,22 +1,22 @@
-  version: 1
-  backend:
-    phases:
-      build:
-        commands:
-          - npm install -g @aws-amplify/cli@latest
-          - amplify push --yes
-  frontend:
-    phases:
-      preBuild:
-        commands:
-          - npm ci
-      build:
-        commands:
-          - npm run build
-    artifacts:
-      baseDirectory: dist
-      files:
-        - '**/*'
-    cache:
-      paths:
-        - node_modules/**/*
+version: 1
+backend:
+  phases:
+    build:
+      commands:
+        - npm install -g @aws-amplify/cli@latest
+        - amplify push --yes
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm ci
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    baseDirectory: dist
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
