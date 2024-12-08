@@ -7,8 +7,8 @@ import {
   AlertDialog,
   AlertDialogContent,
   AlertDialogTrigger,
+  AlertDialogCancel,
 } from "./ui/alert-dialog"
-import { AlertDialogCancel } from '@radix-ui/react-alert-dialog';
 import MarkDownDisplay from './react-markdown'
 import { CulturalContext } from '../contexts/CulturalContext'
 
@@ -37,9 +37,7 @@ function AlertDialogDemo({ loading, data, error, handleSlectInputChange, handleI
     <AlertDialog>
       <AlertDialogTrigger className="flex items-center justify-end" asChild>
         <div className='flex items-center justify-end'>
-          <Button variant="outline" onClick={() => {
-
-          }}>Generate New Market Plan</Button>
+          <Button onClick={() => {}}>Generate New Market Plan</Button>
         </div>
       </AlertDialogTrigger>
       {<AlertDialogContent>
