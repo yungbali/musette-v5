@@ -3,13 +3,13 @@ backend:
   phases:
     build:
       commands:
-        - npm ci
+        - npm install
         - npx amplify push --yes
 frontend:
   phases:
     preBuild:
       commands:
-        - npm ci
+        - npm install
     build:
       commands:
         - npm run build
